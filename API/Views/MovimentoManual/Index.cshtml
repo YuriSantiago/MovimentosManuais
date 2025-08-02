@@ -1,0 +1,166 @@
+﻿@model IEnumerable<MovimentoManualViewModel>
+
+@{
+    ViewData["Title"] = "Movimentos Manuais";
+}
+
+<h2 class="page-title">Movimentos Manuais</h2>
+
+<form id="movimentoForm" asp-action="Create" method="post" class="form-container">
+
+    <div class="form-row">
+        <div class="form-group">
+            <label>Mês:</label>
+            <input type="number" id="DatMes" name="DatMes" required disabled />
+        </div>
+        <div class="form-group">
+            <label>Ano:</label>
+            <input type="number" id="DatAno" name="DatAno" required disabled />
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label>Produto:</label>
+            <select id="CodProduto" name="CodProduto" disabled>
+                <option value="">Selecione um produto</option>
+                @foreach (var produto in ViewBag.Produtos)
+                {
+                    <option value="@produto.CodProduto">@produto.CodProduto - @produto.DesProduto</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Cosif:</label>
+            <select id="CodCosif" name="CodCosif" disabled>
+                <option value="">Selecione o produto primeiro</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Valor:</label>
+        <input type="number" name="ValValor" step="0.01" required disabled />
+    </div>
+
+    <div class="form-group full">
+        <label>Descrição:</label>
+        <textarea name="DesDescricao" rows="4" required disabled></textarea>
+    </div>
+
+    <input type="hidden" name="CodUsuario" value="admin" />
+
+    <div class="form-actions">
+        <button type="button" id="btnNovo" class="btn btn-primary">Novo</button>
+        <button type="button" id="btnLimpar" class="btn btn-secondary">Limpar</button>
+        <button type="submit" id="btnSalvar" class="btn btn-success" disabled>Incluir</button>
+    </div>
+</form>
+
+<hr />
+
+<table class="custom-table">
+    <thead>
+        <tr>
+            <th>Ano</th>
+            <th>Mês</th>
+            <th>Código do Produto</th>
+            <th>Descrição do Produto</th>
+            <th>NR Lançamento</th>
+            <th>Descrição</th>
+            <th>Valor</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.DatAno</td>
+                <td>@item.DatMes</td>
+                <td>@item.CodProduto</td>
+                <td>@item.DesProduto</td>
+                <td>@item.NumLancamento</td>
+                <td>@item.DesDescricao</td>
+                <td>@item.ValValor.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const mesInput = document.getElementById("DatMes");
+            const anoInput = document.getElementById("DatAno");
+
+            if (mesInput) {
+                mesInput.addEventListener("input", function () {
+                    if (this.value.length > 2) {
+                        this.value = this.value.slice(0, 2);
+                    }
+                });
+            }
+
+            if (anoInput) {
+                anoInput.addEventListener("input", function () {
+                    if (this.value.length > 4) {
+                        this.value = this.value.slice(0, 4);
+                    }
+                });
+            }
+
+            const form = document.getElementById("movimentoForm");
+            const inputs = form.querySelectorAll("input, select, textarea");
+            const btnNovo = document.getElementById("btnNovo");
+            const btnLimpar = document.getElementById("btnLimpar");
+            const btnSalvar = document.getElementById("btnSalvar");
+
+            function setFormEnabled(enabled) {
+                inputs.forEach(input => {
+                    if (input.type !== "hidden") {
+                        input.disabled = !enabled;
+                    }
+                });
+                btnSalvar.disabled = !enabled;
+            }
+
+            function clearForm() {
+                form.reset();
+                setFormEnabled(false);
+            }
+
+            btnNovo.addEventListener("click", function () {
+                setFormEnabled(true);
+            });
+
+            btnLimpar.addEventListener("click", function () {
+                clearForm();
+            });
+
+            document.getElementById("CodProduto").addEventListener("change", function () {
+                const produtoId = this.value;
+                const cosifSelect = document.getElementById("CodCosif");
+                cosifSelect.innerHTML = "<option value=''>Carregando...</option>";
+
+                if (produtoId) {
+                    fetch(`/MovimentoManual/GetProdutosCosif?codProduto=${produtoId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            cosifSelect.innerHTML = "<option value=''>Selecione um Cosif</option>";
+                            data.forEach(cosif => {
+                                cosifSelect.innerHTML += `<option value="${cosif.codCosif}">${cosif.codCosif} - ${cosif.codClassificacao}</option>`;
+                            });
+                        })
+                        .catch(() => {
+                            cosifSelect.innerHTML = "<option value=''>Erro ao carregar</option>";
+                        });
+                } else {
+                    cosifSelect.innerHTML = "<option value=''>Selecione o produto primeiro</option>";
+                }
+            });
+
+            setFormEnabled(false);
+        });
+    </script>
+}

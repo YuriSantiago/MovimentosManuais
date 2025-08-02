@@ -1,0 +1,129 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    max-width: 600px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 8px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+
+textarea {
+    resize: vertical;
+    width: 100%;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s ease-in-out;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+    .btn-secondary:hover {
+        background: #565e64;
+    }
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+    .btn-success:hover {
+        background: #1e7e34;
+    }
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+    .custom-table th,
+    .custom-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    .custom-table th {
+        background: #f1f1f1;
+        text-align: left;
+    }
+
+    .custom-table tr:nth-child(even) {
+        background: #f9f9f9;
+    }
+
+    .custom-table tr:hover {
+        background: #f1f1f1;
+    }
