@@ -20,7 +20,7 @@ namespace Contracts.Requests
         [Range(0.01, double.MaxValue)]
         public decimal ValValor { get; set; }
 
-        public required string CodUsuario { get; set; } = "admin";
+        public required string CodUsuario { get; set; } = "ADMIN";
 
     }
 }
