@@ -11,7 +11,7 @@
     <div class="form-row">
         <div class="form-group">
             <label>Mês:</label>
-            <input type="number" id="DatMes" name="DatMes" required disabled />
+            <input type="number" id="DatMes" name="DatMes" min="1" max="12" required disabled />
         </div>
         <div class="form-group">
             <label>Ano:</label>
@@ -40,7 +40,7 @@
 
     <div class="form-group">
         <label>Valor:</label>
-        <input type="number" name="ValValor" step="0.01" required disabled />
+            <input type="text" id="ValValor" name="ValValor" step="0.01" required disabled />
     </div>
 
     <div class="form-group full">
@@ -89,16 +89,29 @@
 
 @section Scripts {
     <script>
+
         document.addEventListener("DOMContentLoaded", function () {
 
             const mesInput = document.getElementById("DatMes");
             const anoInput = document.getElementById("DatAno");
+            const valorInput = document.getElementById("ValValor");
+
+            valorInput.addEventListener("input", function (e) {
+                let value = e.target.value.replace(/\D/g, "");
+                if (value) {
+                    value = (value / 100).toFixed(2) + "";
+                    value = value.replace(".", ",");
+                    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    e.target.value = "R$ " + value;
+                } else {
+                    e.target.value = "";
+                }
+            });
 
             if (mesInput) {
                 mesInput.addEventListener("input", function () {
-                    if (this.value.length > 2) {
-                        this.value = this.value.slice(0, 2);
-                    }
+                    if (this.value > 12) this.value = 12;
+                    if (this.value < 1 && this.value !== "") this.value = 1;
                 });
             }
 
@@ -110,11 +123,33 @@
                 });
             }
 
+            function converterParaDecimalBrasileiro(valor) {
+                if (!valor) return "";
+                return valor.replace(/\./g, "").replace(",", ".");
+            }
+
             const form = document.getElementById("movimentoForm");
             const inputs = form.querySelectorAll("input, select, textarea");
             const btnNovo = document.getElementById("btnNovo");
             const btnLimpar = document.getElementById("btnLimpar");
             const btnSalvar = document.getElementById("btnSalvar");
+
+            form.addEventListener("submit", function () {
+                let valorStr = valorInput.value
+                    .replace("R$ ", "") 
+                    .replace(/\./g, "") 
+                    .replace(",", "."); 
+
+                console.log("String limpa:", valorStr);
+
+                let numero = parseFloat(valorStr);
+
+                if (isNaN(numero)) {
+                    valorInput.value = '';
+                } else {
+                    valorInput.value = numero.toFixed(2).replace(".", ",");
+                }
+            });
 
             function setFormEnabled(enabled) {
                 inputs.forEach(input => {
@@ -123,6 +158,7 @@
                     }
                 });
                 btnSalvar.disabled = !enabled;
+
             }
 
             function clearForm() {
@@ -155,7 +191,7 @@
                         .catch(() => {
                             cosifSelect.innerHTML = "<option value=''>Erro ao carregar</option>";
                         });
-                } else {
+                } else {    
                     cosifSelect.innerHTML = "<option value=''>Selecione o produto primeiro</option>";
                 }
             });
