@@ -17,7 +17,7 @@ namespace Contracts.Requests
         [StringLength(50)]
         public required string DesDescricao { get; set; }
 
-        [Range(0.01, double.MaxValue)]
+        //[Range(0.01, double.MaxValue)]
         public decimal ValValor { get; set; }
 
         public required string CodUsuario { get; set; } = "ADMIN";
